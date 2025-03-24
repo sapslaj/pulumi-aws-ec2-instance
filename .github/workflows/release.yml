@@ -21,7 +21,7 @@ jobs:
       - name: npm ci
         run: npm ci --ignore-scripts
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GH_ACTIONS_READ_TOKEN }}
       - name: npm run build
         run: npm run build
       - name: get version
