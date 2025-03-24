@@ -9,9 +9,6 @@ permissions:
   contents: write
   packages: write
 
-env:
-  NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -23,6 +20,8 @@ jobs:
           registry-url: https://npm.pkg.github.com
       - name: npm ci
         run: npm ci --ignore-scripts
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: npm run build
         run: npm run build
       - name: get version
@@ -30,6 +29,8 @@ jobs:
         run: echo "version=v$(jq -r '.version' package.json)" >> "$GITHUB_OUTPUT"
       - name: npm publish
         run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.get_version.outputs.version }}

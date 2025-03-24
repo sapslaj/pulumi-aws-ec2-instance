@@ -13,9 +13,6 @@ permissions:
   contents: read
   packages: read
 
-env:
-  NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 jobs:
   build:
     name: Build
@@ -27,6 +24,8 @@ jobs:
           node-version: '22'
           registry-url: https://npm.pkg.github.com
       - run: npm ci --ignore-scripts
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: npm run build
   test:
     name: Test
@@ -38,4 +37,6 @@ jobs:
           node-version: '22'
           registry-url: https://npm.pkg.github.com
       - run: npm ci --ignore-scripts
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: npm test
