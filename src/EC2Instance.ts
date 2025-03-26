@@ -285,7 +285,15 @@ export class EC2Instance extends pulumi.ComponentResource {
     });
 
     let connectionHost: pulumi.Input<string>;
-    const connectionHostFrom = props.connectionArgs?.hostFrom ?? HostFrom.PrivateIPV4;
+    let connectionHostFrom = props.connectionArgs?.hostFrom;
+
+    if (connectionHostFrom === undefined) {
+      if (props.securityGroup?.createDefaultEgressRule) {
+        connectionHostFrom = HostFrom.PublicIPv4;
+      } else {
+        connectionHostFrom = HostFrom.PrivateIPV4;
+      }
+    }
 
     switch (connectionHostFrom) {
       case HostFrom.DNS: {
@@ -314,10 +322,15 @@ export class EC2Instance extends pulumi.ComponentResource {
           connectionHost = this.instance.publicIp;
         }
       }
-      default: {
+      case HostFrom.PrivateIPV4: {
         connectionHost = this.instance.privateIp;
       }
+      default: {
+        throw new Error(`unknown HostFrom: ${connectionHostFrom}`);
+      }
     }
+
+    delete props.connectionArgs?.hostFrom;
 
     let connection: command.types.input.remote.ConnectionArgs = {
       host: connectionHost,
