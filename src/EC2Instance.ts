@@ -321,9 +321,11 @@ export class EC2Instance extends pulumi.ComponentResource {
         } else {
           connectionHost = this.instance.publicIp;
         }
+        break;
       }
       case HostFrom.PrivateIPV4: {
         connectionHost = this.instance.privateIp;
+        break;
       }
       default: {
         throw new Error(`unknown HostFrom: ${connectionHostFrom}`);
