@@ -122,6 +122,8 @@ export class EC2IAM extends pulumi.ComponentResource {
       new aws.iam.RolePolicyAttachmentsExclusive(name, {
         roleName: getRoleName(),
         policyArns: Object.values(managedPolicies),
+      }, {
+        parent: this,
       });
     }
 
@@ -134,12 +136,16 @@ export class EC2IAM extends pulumi.ComponentResource {
         name: key,
         role: getRoleName(),
         policy,
+      }, {
+        parent: this,
       });
     }
     if (props.rolePoliciesExclusive) {
       new aws.iam.RolePoliciesExclusive(name, {
         roleName: getRoleName(),
         policyNames: Object.keys(this.rolePolicies),
+      }, {
+        parent: this,
       });
     }
   }

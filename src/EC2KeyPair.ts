@@ -29,6 +29,8 @@ export class EC2KeyPair extends pulumi.ComponentResource {
       this.privateKeyResource = new tls.PrivateKey(name, {
         algorithm: "ED25519",
         ...props.privateKeyConfig,
+      }, {
+        parent: this,
       });
       privateKey = this.privateKeyResource.privateKeyOpenssh;
     }
@@ -59,6 +61,8 @@ export class EC2KeyPair extends pulumi.ComponentResource {
       this.keyPair = new aws.ec2.KeyPair(name, {
         publicKey,
         ...props.keyPairConfig,
+      }, {
+        parent: this,
       });
     }
   }

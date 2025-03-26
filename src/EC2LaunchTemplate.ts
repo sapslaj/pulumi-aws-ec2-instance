@@ -164,6 +164,8 @@ export class EC2LaunchTemplate extends pulumi.ComponentResource {
     if (ltArgs.keyName === undefined || props.keyPair !== undefined) {
       this.keyPair = new EC2KeyPair(id, {
         ...props.keyPair,
+      }, {
+        parent: this,
       });
     }
     if (ltArgs.keyName === undefined && this.keyPair?.keyPair) {
@@ -174,6 +176,8 @@ export class EC2LaunchTemplate extends pulumi.ComponentResource {
       this.ansible = new AnsibleUserDataProvisioner(id, {
         ansibleInstallCommand: this.ami?.ansibleInstallCommand,
         ...props.ansible,
+      }, {
+        parent: this,
       });
 
       if (ltArgs.userData === undefined) {
@@ -188,6 +192,8 @@ export class EC2LaunchTemplate extends pulumi.ComponentResource {
         awsCLIInstallCommand: this.ami?.awsCLIInstallCommand,
         ...props.ansible,
         tags: mergeTags(props.tags, props.ansible.tags),
+      }, {
+        parent: this,
       });
 
       if (ltArgs.userData === undefined) {

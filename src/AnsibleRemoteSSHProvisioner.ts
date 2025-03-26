@@ -32,6 +32,8 @@ export class AnsibleRemoteSSHProvisioner extends pulumi.ComponentResource {
           props.setHostname,
           props.setHostnameCommand,
         ],
+      }, {
+        parent: this,
       });
     }
 

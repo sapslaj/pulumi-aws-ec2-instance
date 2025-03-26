@@ -5,10 +5,10 @@ import * as pulumi from "@pulumi/pulumi";
 import { AnsibleRemoteSSHProvisioner, AnsibleRemoteSSHProvisionerConfig } from "./AnsibleRemoteSSHProvisioner";
 import { AnsibleS3UserDataProvisioner, AnsibleS3UserDataProvisionerConfig } from "./AnsibleS3UserDataProvisioner";
 import { AnsibleUserDataProvisioner, AnsibleUserDataProvisionerConfig } from "./AnsibleUserDataProvisioner";
+import { EC2IAM, EC2IAMConfig } from "./EC2IAM";
 import { EC2InstanceCloudWatch, EC2InstanceCloudWatchConfig } from "./EC2InstanceCloudWatch";
 import { EC2InstanceDNS, EC2InstanceDNSConfig } from "./EC2InstanceDNS";
 import { EC2InstanceEIP, EC2InstanceEIPConfig } from "./EC2InstanceEIP";
-import { EC2IAM, EC2IAMConfig } from "./EC2IAM";
 import { EC2KeyPair, EC2KeyPairConfig } from "./EC2KeyPair";
 import { EC2SecurityGroup, EC2SecurityGroupConfig } from "./EC2SecurityGroup";
 import { AMIConfig, Architecture, lookupAMI, LookupAMIResult } from "./lookupAMI";
@@ -196,6 +196,8 @@ export class EC2Instance extends pulumi.ComponentResource {
     if (instanceArgs.keyName === undefined || props.keyPair !== undefined) {
       this.keyPair = new EC2KeyPair(id, {
         ...props.keyPair,
+      }, {
+        parent: this,
       });
     }
     if (instanceArgs.keyName === undefined && this.keyPair?.keyPair) {
@@ -207,6 +209,8 @@ export class EC2Instance extends pulumi.ComponentResource {
         ansibleInstallCommand: this.ami?.ansibleInstallCommand,
         defaultHostname: this.dns?.hostname ?? name,
         ...props.ansible,
+      }, {
+        parent: this,
       });
 
       if (instanceArgs.userData === undefined && instanceArgs.userDataBase64 === undefined) {
@@ -223,6 +227,8 @@ export class EC2Instance extends pulumi.ComponentResource {
         defaultHostname: this.dns?.hostname ?? name,
         ...props.ansible,
         tags: mergeTags(props.tags, props.ansible.tags),
+      }, {
+        parent: this,
       });
 
       if (instanceArgs.userData === undefined && instanceArgs.userDataBase64 === undefined) {
@@ -264,6 +270,8 @@ export class EC2Instance extends pulumi.ComponentResource {
         instance: this.instance,
         instanceName: name,
         ...props.dns,
+      }, {
+        parent: this,
       });
     }
 
@@ -333,6 +341,8 @@ export class EC2Instance extends pulumi.ComponentResource {
         ansibleInstallCommand: this.ami?.ansibleInstallCommand,
         defaultHostname: this.dns?.hostname ?? name,
         ...props.ansible,
+      }, {
+        parent: this,
       });
     }
   }
